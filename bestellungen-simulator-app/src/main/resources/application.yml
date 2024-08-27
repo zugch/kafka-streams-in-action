@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: bestellungen-simulator
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      #      group-id: bestellungen-simulator
+      group-id: bestellungen-simulator-${random.uuid}
+      auto-offset-reset: earliest
+#      properties:
+#        spring.json.trusted.packages: de.sidion.saga.events
+
+

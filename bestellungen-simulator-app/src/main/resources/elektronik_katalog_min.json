@@ -1,0 +1,62 @@
+[
+  {
+    "idx": "1",
+    "artikelName": "Sony Xperia 5",
+    "kategorie": "Smartphones",
+    "preis": 555
+  },
+  {
+    "idx": "2",
+    "artikelName": "HP Spectre x360",
+    "kategorie": "Laptops",
+    "preis": 321
+  },
+  {
+    "idx": "3",
+    "artikelName": "Microsoft Surface Pro",
+    "kategorie": "Tablets",
+    "preis": 204
+  },
+  {
+    "idx": "4",
+    "artikelName": "Sony WH-1000XM4",
+    "kategorie": "Audio",
+    "preis": 1788
+  },
+  {
+    "idx": "5",
+    "artikelName": "Sony Bravia",
+    "kategorie": "Televisions",
+    "preis": 643
+  },
+  {
+    "idx": "6",
+    "artikelName": "Alienware Gaming PC",
+    "kategorie": "Gaming",
+    "preis": 209
+  },
+  {
+    "idx": "7",
+    "artikelName": "Fitbit Charge 4",
+    "kategorie": "Wearables",
+    "preis": 1999
+  },
+  {
+    "idx": "8",
+    "artikelName": "Sony Alpha A7 III",
+    "kategorie": "Cameras",
+    "preis": 1274
+  },
+  {
+    "idx": "9",
+    "artikelName": "Anker Power Bank",
+    "kategorie": "Accessories",
+    "preis": 620
+  },
+  {
+    "idx": "10",
+    "artikelName": "Netgear Nighthawk Router",
+    "kategorie": "Networking",
+    "preis": 892
+  }
+]

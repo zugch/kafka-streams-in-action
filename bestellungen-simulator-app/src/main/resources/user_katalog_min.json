@@ -1,0 +1,26 @@
+[
+  {
+    "idx": "1",
+    "name": "Evelyn Anderson",
+    "email": "evelyn.anderson@test.com",
+    "gesammtBestellSumme": 0
+  },
+  {
+    "idx": "2",
+    "name": "Alexander Hernandez",
+    "email": "alexander.hernandez@test.com",
+    "gesammtBestellSumme": 0
+  },
+  {
+    "idx": "3",
+    "name": "Charlotte Lopez",
+    "email": "charlotte.lopez@mail.com",
+    "gesammtBestellSumme": 0
+  },
+  {
+    "idx": "4",
+    "name": "James Taylor",
+    "email": "james.taylor@test.com",
+    "gesammtBestellSumme": 0
+  }
+]
