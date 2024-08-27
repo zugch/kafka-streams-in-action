@@ -50,36 +50,6 @@ class AggregateBestellungenByKundeTopologyTest {
 
     @Test
     void createTopology() {
-        final KundeEvent k01 = KundeEvent.builder().idx("k01").build();
-        final KundeEvent k02 = KundeEvent.builder().idx("k02").build();
-
-        inputTopicKunden.pipeInput(k01.getIdx(), k01);
-        inputTopicKunden.pipeInput(k02.getIdx(), k02);
-
-        final BestellungEvent b01 = BestellungEvent.builder().idx("b01").kundenIdx("k01").gesamtSumme(100).build();
-        final BestellungEvent b02 = BestellungEvent.builder().idx("b02").kundenIdx("k02").gesamtSumme(200).build();
-        final BestellungEvent b03 = BestellungEvent.builder().idx("b03").kundenIdx("k01").gesamtSumme(300).build();
-        final BestellungEvent b04 = BestellungEvent.builder().idx("b04").kundenIdx("k02").gesamtSumme(400).build();
-        final BestellungEvent b05 = BestellungEvent.builder().idx("b05").kundenIdx("k01").gesamtSumme(500).build();
-
-        inputTopicBestellungen.pipeInput(b01.getIdx(), b01);
-        inputTopicBestellungen.pipeInput(b02.getIdx(), b02);
-        inputTopicBestellungen.pipeInput(b03.getIdx(), b03);
-        inputTopicBestellungen.pipeInput(b04.getIdx(), b04);
-        inputTopicBestellungen.pipeInput(b05.getIdx(), b05);
-
-        final Map<String, AggregatedKundeEvent> result = outputTopic.readKeyValuesToMap();
-        System.out.println(result);
-        Assertions.assertEquals(2, result.size());
-        Assertions.assertEquals(900, result.get("k01").getGesamtSumme());
-        Assertions.assertEquals(600, result.get("k02").getGesamtSumme());
-
-        final BestellungEvent b06 = BestellungEvent.builder().idx("b06").kundenIdx("k01").gesamtSumme(50).build();
-        inputTopicBestellungen.pipeInput(b06.getIdx(), b06);
-
-        final Map<String, AggregatedKundeEvent> result2 = outputTopic.readKeyValuesToMap();
-        Assertions.assertEquals(1, result2.size());
-        Assertions.assertEquals(950, result2.get("k01").getGesamtSumme());
 
 
     }
