@@ -1,9 +1,9 @@
 package de.thmWeb.kafka.kafka.streaming.kafkaStreams;
 
 import de.thmWeb.kafka.kafka.streaming.events.AggregatedKundeEvent;
-import de.thmWeb.kafka.kafka.streaming.kafkaStreams.serde.SerdeFactory;
 import de.thmWeb.kafka.kafka.streaming.events.BestellungEvent;
 import de.thmWeb.kafka.kafka.streaming.events.KundeEvent;
+import de.thmWeb.kafka.kafka.streaming.kafkaStreams.serde.SerdeFactory;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.*;
@@ -14,48 +14,49 @@ public class AggregateBestellungenByKundeTopology implements ExampleTopology {
 
     @Override
     public void createTopology(final StreamsBuilder builder) {
-        // Kunden in KTable einlesen
-        final KTable<String, KundeEvent> kundenTable = builder.table("kunden",
-                Consumed.with(Serdes.String(), SerdeFactory.serdeForKundeEvent()));
+        // Bestellungen in Stream einlesen aus Topic "bestellungen"
+        KStream<String, BestellungEvent> bestellungenStream = builder.stream("bestellungen",
+                Consumed.with(Serdes.String(), SerdeFactory.serdeForBestellungEvent()));
 
-        // Bestellungen in Stream einlesen
-        final KStream<String, BestellungEvent> bestellungenStream =
-                builder.stream("bestellungen", Consumed.with(Serdes.String(), SerdeFactory.serdeForBestellungEvent()));
+
+        // Kunden in KTable einlesen aus Topic "kunden"
+        KTable<String, KundeEvent> kundenTable = builder.table("kunden", Consumed.with(Serdes.String(), SerdeFactory.serdeForKundeEvent()));
 
         // Bestellungen mit Key=Kunde versehen
-        final KStream<String, BestellungEvent> bestellungenWithNewKey = bestellungenStream.selectKey((key, val) -> val.getKundenIdx());
-
+        KStream<String, BestellungEvent> bestellungenWithNewKey = bestellungenStream.selectKey((k, v) -> v.getKundenIdx());
 
         // Bestellungen gruppieren anhand KundenIdx
-        final KGroupedStream<String, BestellungEvent> groupedOrderStream =
+        KGroupedStream<String, BestellungEvent> groupedStream =
                 bestellungenWithNewKey.groupByKey(Grouped.with(Serdes.String(), SerdeFactory.serdeForBestellungEvent()));
 
+
         // Bestellungen aggregieren
-        final KTable<String, BestellungEvent> aggregatedBestellungenByKunde = groupedOrderStream.aggregate(() -> new BestellungEvent(),
-                (key, value, bestellungEvent) -> {
-                    bestellungEvent.setGesamtSumme(bestellungEvent.getGesamtSumme() + value.getGesamtSumme());
-                    return bestellungEvent;
+        KTable<String, AggregatedKundeEvent> aggregatedKundeEventTable = groupedStream.aggregate(() -> new AggregatedKundeEvent(),
+                (key, value, aggregatedKundeEvent) -> {
+                    aggregatedKundeEvent.setGesamtSumme(aggregatedKundeEvent.getGesamtSumme() + value.getGesamtSumme());
+                    return aggregatedKundeEvent;
                 },
-                Materialized.with(Serdes.String(), SerdeFactory.serdeForBestellungEvent()));
+                Materialized.with(Serdes.String(), SerdeFactory.serdeForAggregatedKundeEvent())
+        );
 
 
-        final ValueJoiner<BestellungEvent, KundeEvent, AggregatedKundeEvent> valueJoiner = new ValueJoiner<>() {
+        // ValueJoiner erstellen
+        ValueJoiner<AggregatedKundeEvent, KundeEvent, AggregatedKundeEvent> valueJoiner = new ValueJoiner<AggregatedKundeEvent, KundeEvent, AggregatedKundeEvent>() {
             @Override
-            public AggregatedKundeEvent apply(BestellungEvent bestellungEvent, KundeEvent kundeEvent) {
-                return AggregatedKundeEvent.builder()
-                        .kunde(kundeEvent)
-                        .kundenIdx(kundeEvent.getIdx())
-                        .gesamtSumme(bestellungEvent.getGesamtSumme())
-                        .build();
+            public AggregatedKundeEvent apply(AggregatedKundeEvent aggregatedKundeEvent, KundeEvent kundeEvent) {
+                aggregatedKundeEvent.setKundenIdx(kundeEvent.getIdx());
+                aggregatedKundeEvent.setKunde(kundeEvent);
+                return aggregatedKundeEvent;
             }
         };
-        KStream<String, AggregatedKundeEvent> joinedBestellungen = aggregatedBestellungenByKunde.toStream().join(kundenTable, valueJoiner,
-                Joined.with(Serdes.String(), SerdeFactory.serdeForBestellungEvent(), SerdeFactory.serdeForKundeEvent()));
 
-        // Ausgabe auf Topic
+
+        // Join AggregierteBestellungen mit Kunden
+        KStream<String, AggregatedKundeEvent> joinedBestellungen = aggregatedKundeEventTable.toStream().join(kundenTable, valueJoiner,
+                Joined.with(Serdes.String(), SerdeFactory.serdeForAggregatedKundeEvent(), SerdeFactory.serdeForKundeEvent()));
+
+        // Ausgabe auf Topic "bestellungen-aggregiert-pro-kunde"
         joinedBestellungen.to("bestellungen-aggregiert-pro-kunde", Produced.with(Serdes.String(), SerdeFactory.serdeForAggregatedKundeEvent()));
-
-
 
     }
 }

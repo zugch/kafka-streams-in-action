@@ -69,7 +69,6 @@ class AggregateBestellungenByKundeTopologyTest {
         inputTopicBestellungen.pipeInput(b05.getIdx(), b05);
 
         final Map<String, AggregatedKundeEvent> result = outputTopic.readKeyValuesToMap();
-        System.out.println(result);
         Assertions.assertEquals(2, result.size());
         Assertions.assertEquals(900, result.get("k01").getGesamtSumme());
         Assertions.assertEquals(600, result.get("k02").getGesamtSumme());
