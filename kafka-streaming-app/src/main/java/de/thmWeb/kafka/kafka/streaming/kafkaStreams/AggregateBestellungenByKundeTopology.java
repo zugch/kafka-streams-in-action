@@ -14,11 +14,11 @@ public class AggregateBestellungenByKundeTopology implements ExampleTopology {
 
     @Override
     public void createTopology(final StreamsBuilder builder) {
-        // Kunden in KTable einlesen aus Topic "kunden"
-
         // Bestellungen in Stream einlesen aus Topic "bestellungen"
 
-        // Bestellungen mit Key=Kunde versehen
+        // Kunden in KTable einlesen aus Topic "kunden"
+
+        // Bestellungen mit Key=KundenIdx versehen
 
         // Bestellungen gruppieren anhand KundenIdx
 
