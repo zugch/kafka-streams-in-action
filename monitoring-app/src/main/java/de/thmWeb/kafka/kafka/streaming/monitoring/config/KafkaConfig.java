@@ -2,6 +2,7 @@ package de.thmWeb.kafka.kafka.streaming.monitoring.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.thmWeb.kafka.kafka.streaming.events.AggregatedKundeEvent;
+import de.thmWeb.kafka.kafka.streaming.events.BestellungEvent;
 import de.thmWeb.kafka.kafka.streaming.events.KundeEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -37,6 +38,11 @@ public class KafkaConfig {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, AggregatedKundeEvent> aggregatedKundeEventKafkaListenerContainerBatchFactory() {
         return createKafkaListenerContainerFactory(AggregatedKundeEvent.class);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, BestellungEvent> bestellungEventKafkaListenerContainerBatchFactory() {
+        return createKafkaListenerContainerFactory(BestellungEvent.class);
     }
 
 
