@@ -31,7 +31,7 @@ public class InitDataRestController {
     @GetMapping("/init-kunden/{numberOfKunden}")
     public String initKundenData(@PathVariable(value = "numberOfKunden") final Integer numberOfKunden) {
         try {
-            kundenImporter.importArtikel(numberOfKunden);
+            kundenImporter.importKunden(numberOfKunden);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

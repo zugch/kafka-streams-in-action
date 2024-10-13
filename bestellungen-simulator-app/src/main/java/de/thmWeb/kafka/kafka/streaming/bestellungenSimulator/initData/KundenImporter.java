@@ -20,13 +20,13 @@ public class KundenImporter {
         this.kafkaHandler = kafkaHandler;
     }
 
-    public void importArtikel(final Integer numberOfArtikel) throws IOException {
+    public void importKunden(final Integer numberOfKunden) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectReader objectReader = objectMapper.readerForListOf(KundeEvent.class);
 
         URL resource = this.getClass().getClassLoader().getResource("user_katalog.json");
         List<KundeEvent> kundeEventList = objectReader.readValue(resource);
-        for (int i = 0; i < numberOfArtikel; i++) {
+        for (int i = 0; i < numberOfKunden; i++) {
             KundeEvent kundeEvent = kundeEventList.get(i);
             kafkaHandler.sendEventToKafka("kunden", kundeEvent.getIdx(), kundeEvent, Collections.emptyMap());
         }
