@@ -7,11 +7,9 @@ import de.thmWeb.kafka.kafka.streaming.kafkaStreams.serde.SerdeFactory;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.*;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 import java.util.Properties;
 
 class AggregateBestellungenByKundeTopologyTest {

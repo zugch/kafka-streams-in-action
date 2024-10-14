@@ -1,0 +1,86 @@
+<html>
+<head>
+    <title>Monitoring-App</title>
+    <meta charset="UTF-8">
+    <title>Thymeleaf mit Bootstrap und jQuery</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
+
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <h2>Top-Bestellungen</h2>
+            <ul id="topbestellungen" class="list-group">
+            </ul>
+        </div>
+        <div class="col-sm">
+            <h2>Aggregierte Kunden-Bestellungen</h2>
+            <ul id="kundenBestellungen" class="list-group">
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        function fetchTopBestellungen() {
+            $.get("http://localhost:8081/api/topbestellungen", function (data) {
+                setTobBestellungenData(data);
+
+            })
+                .fail(function () {
+                    console.log("Fehler beim Abrufen der Daten.");
+                });
+        }
+
+        function fetchAggregierteKundenEvents() {
+            $.get("http://localhost:8081/api/kundenbestellungen", function (data) {
+                setAggregierteKundenEventsData(data);
+
+            })
+                .fail(function () {
+                    console.log("Fehler beim Abrufen der Daten.");
+                });
+        }
+
+        // Die Funktion alle 5 Sekunden ausführen
+        setInterval(fetchTopBestellungen, 5000);
+        setInterval(fetchAggregierteKundenEvents, 5000);
+    });
+
+    function setTobBestellungenData(jsonData) {
+        $('ul#topbestellungen li').remove();
+
+        $.each(jsonData, function (index, data) {
+            $('ul#topbestellungen').append('<li class="list-group-item">KundenIdx: ' + data.kundenIdx + ':<br />GesammtSumme: ' + data.gesamtSumme + '</li>');
+        });
+    }
+
+    function setAggregierteKundenEventsData(jsonData) {
+        $('ul#kundenBestellungen li').remove();
+
+        $.each(jsonData, function (index, data) {
+            $('ul#kundenBestellungen').append('<li class="list-group-item">KundenIdx: ' + data.kundenIdx + ':<br />GesammtSumme: ' + data.gesamtSumme + ':<br />Name: ' + data.kunde.name + ':<br />Email: ' + data.kunde.email + '</li>');
+        });
+    }
+
+</script>
+</body>
+</html>
